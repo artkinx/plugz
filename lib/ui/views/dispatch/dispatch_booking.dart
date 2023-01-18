@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:plugz/core/services/api.dart';
 import 'package:plugz/ui/widgets/custom_textfield_widget.dart';
@@ -43,7 +41,6 @@ class _DispatchBooking extends State<DispatchBooking> {
 
   String? imageUrl;
   int? price;
-  Image? packageimage;
 
   Future<void> newPrice() async {
     Api.instance.getPrice(pickupLongitude, pickupLatitude, dropoffLongitude,
@@ -101,7 +98,7 @@ class _DispatchBooking extends State<DispatchBooking> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
               color: Colors.blue,
               child: Row(
                 children: [
@@ -144,7 +141,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     //the card container
                     Form(
                         key: _formKey,
@@ -160,7 +157,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                                     controller: _packageDescription,
                                     label: 'Package Description',
                                     keyboardType: TextInputType.number,
-                                  ),	
+                                  ),
                                 ),
                                 const SizedBox(width: 10),
                                 itemImage(),
@@ -261,7 +258,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                                             ),
                                           ),
 
-                                          const SizedBox(width: 20.0),
+                                          SizedBox(width: 20.0),
                                           //Pick Time
                                           InkWell(
                                             onTap: () async {
@@ -304,7 +301,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                               ),
                             ),
 
-                            const SizedBox(
+                            SizedBox(
                               height: 10.0,
                             ),
                             // Drop Off Information
@@ -365,7 +362,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                                             ),
                                           ),
 
-                                          const SizedBox(width: 20.0),
+                                          SizedBox(width: 20.0),
                                           //Pick Time
                                           InkWell(
                                             onTap: () async {
@@ -408,7 +405,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                               ),
                             ),
 
-                            const SizedBox(
+                            SizedBox(
                               height: 20.0,
                             ),
                             Row(
@@ -446,7 +443,7 @@ class _DispatchBooking extends State<DispatchBooking> {
                                               newValue as String;
                                         });
                                       },
-                                      items: paymentMethod.	((valueItem) {
+                                      items: paymentMethod.map((valueItem) {
                                         return DropdownMenuItem(
                                           value: valueItem,
                                           child: Text(valueItem),
@@ -457,11 +454,11 @@ class _DispatchBooking extends State<DispatchBooking> {
                                 )
                               ],
                             ),
-                            const SizedBox(height: 20.0),
+                            SizedBox(height: 20.0),
                             // priview button
                             CustomButtonWidget(
                               btnText: "Preview",
-                              btnColor: const Color(0xff9B51E0),
+                              btnColor: Color(0xff9B51E0),
                               onTap: () {
                                 if (_formKey.currentState!.validate()) {
                                   newPrice();
@@ -506,9 +503,7 @@ class _DispatchBooking extends State<DispatchBooking> {
       children: [
         CircleAvatar(
           radius: 30.0,
-          backgroundImage: packageimage == null
-              ? const AssetImage("images/placeholder.jpg")
-              : packageimage!.image,
+          backgroundImage: AssetImage("images/placeholder.jpg"),
         ),
         Positioned(
           bottom: 2.0,
@@ -516,9 +511,11 @@ class _DispatchBooking extends State<DispatchBooking> {
           child: InkWell(
             onTap: () {
               showModalBottomSheet(
-                  context: context, builder: (builder) => cameraBottomSheet());
+                context: context,
+                builder: (builder) => cameraBottomSheet(),
+              );
             },
-            child: const Icon(
+            child: Icon(
               Icons.camera_alt,
               color: Color(0xff9B51E0),
             ),
@@ -533,10 +530,10 @@ class _DispatchBooking extends State<DispatchBooking> {
     return Container(
       height: 105,
       width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Choose Item Photo ',
             style: TextStyle(
               fontSize: 20.0,
@@ -549,27 +546,25 @@ class _DispatchBooking extends State<DispatchBooking> {
               //E1EAF1
               CircleAvatar(
                 radius: 30.0,
-                backgroundColor: const Color(0xffE1EAF1),
+                backgroundColor: Color(0xffE1EAF1),
                 child: IconButton(
                   icon: const Icon(Icons.camera, color: Color(0xff9B51E0)),
                   tooltip: 'take a shot',
                   onPressed: () {
                     _getFromCamera();
-                    Navigator.pop(context);
                   },
                 ),
               ),
 
-              const SizedBox(width: 20.0),
+              SizedBox(width: 20.0),
               CircleAvatar(
                 radius: 30.0,
-                backgroundColor: const Color(0xffE1EAF1),
+                backgroundColor: Color(0xffE1EAF1),
                 child: IconButton(
                   icon: const Icon(Icons.image, color: Color(0xff9B51E0)),
                   tooltip: 'take a shot',
                   onPressed: () {
                     _getFromGallery();
-                    Navigator.pop(context);
                   },
                 ),
               ),
@@ -591,25 +586,19 @@ class _DispatchBooking extends State<DispatchBooking> {
   void _getFromCamera() async {
     XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.camera);
-
-    // var img = await pickedFile!.readAsBytes();
-
+    Navigator.pop(context);
     setState(() {
-      packageimage = Image.file(File(pickedFile!.path));
-      // _imageFile = pickedFile;
+      _imageFile = pickedFile;
     });
-
-    // Navigator.pop(context);
   }
 
   void _getFromGallery() async {
     XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    // var img = await pickedFile!.readAsBytes();
-
+    Navigator.pop(context);
     setState(() {
-      packageimage = Image.file(File(pickedFile!.path));
-      // _imageFile = pickedFile;
+      _imageFile = pickedFile;
+      print(_imageFile);
     });
   }
 
